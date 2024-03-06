@@ -169,13 +169,39 @@ class ProjectsController
 
   before_action :preload_memberships, only: [:index]
 
-  skip_before_action :find_project, :only => [:get_mail_addresses]
-  skip_before_action :authorize, :only => [:get_mail_addresses]
+  skip_before_action :find_project, :only => [:get_mail_addresses, :search]
+  skip_before_action :authorize, :only => [:get_mail_addresses, :search] # TODO vérifier pour quoi ,before action ne fonctionne pas
 
   helper_method :members_map
   helper_method :organizations_map
   helper_method :directions_map
   helper_method :trackers_issues_map
+
+   def search       
+      query_params = params[:query].permit!.to_h      
+      @query = retrieve_project_query_from_param(query_params)       
+      scope = @query.results_scope
+
+      # Filtrer les projets en fonction du paramètre de recherche      
+      scope = scope.like(params[:search_term])   if params[:search_term].present?   
+       if @query.display_type == 'board'
+            @entries = scope.to_a
+          else
+            @entry_count = scope.count            
+            @entry_pages = Paginator.new @entry_count, per_page_option, params['page']
+            @entries = scope.offset(@entry_pages.offset).limit(@entry_pages.per_page).to_a
+          end
+          @entries = scope.to_a    
+          render json: { html: render_to_string(partial: 'list' , locals: { entries: @entries }) }     
+    end
+
+    def retrieve_project_query_from_param(query_params)
+      query = ProjectQuery.new
+      query_params.each do |key, value|               
+        query.public_send("#{key}=", value) if value.present?
+      end
+      query       
+    end
 end
 
 class Project

@@ -1,39 +1,39 @@
 //cached here for performance reasons
 STRIP_HTML_REGEX = new RegExp("<[^>]*>", "g")
 
-$(function() {
-  //focus on search field on load
-  $("#filter-by-tracker").focus();
+// $(function() {
+//   //focus on search field on load
+//   $("#filter-by-tracker").focus();
 
-  //filter projects depending on input value
-  $("#filter-by-tracker").on("keyup", function() {
+//   //filter projects depending on input value
+//   $("#filter-by-tracker").on("keyup", function() {
 
-      var visible_projects = [];
+//       var visible_projects = [];
 
-      if($(this).val()){
-          $("table.list.projects > tbody > tr").hide();
-          visible_lines = $("table.list.projects > tbody > tr:MyCaseInsensitiveContains('"+$(this).val()+"')");
-          visible_lines.show();
-          for (var i=0; i < visible_lines.length; i++){
-              // Look no need to do list[i] in the body of the loop
-              visible_projects[i] = visible_lines[i].id.replace('project-line-','');
-          }
-      }else{
-          $("table.list.projects > tbody > tr").show();
-      }
+//       if($(this).val()){
+//           $("table.list.projects > tbody > tr").hide();
+//           visible_lines = $("table.list.projects > tbody > tr:MyCaseInsensitiveContains('"+$(this).val()+"')");
+//           visible_lines.show();
+//           for (var i=0; i < visible_lines.length; i++){
+//               // Look no need to do list[i] in the body of the loop
+//               visible_projects[i] = visible_lines[i].id.replace('project-line-','');
+//           }
+//       }else{
+//           $("table.list.projects > tbody > tr").show();
+//       }
 
-      $(".export_links").attr('href', function(i, h) {
-          if(h.indexOf('projects=') != -1){
-              return h.replace( /(visible_projects=).*/ig, '$1'+visible_projects );
-          }else{
-              return h + (h.indexOf('?') != -1 ? '&visible_projects=' +visible_projects : '?visible_projects=' +visible_projects);
-          }
-      });
+//       $(".export_links").attr('href', function(i, h) {
+//           if(h.indexOf('projects=') != -1){
+//               return h.replace( /(visible_projects=).*/ig, '$1'+visible_projects );
+//           }else{
+//               return h + (h.indexOf('?') != -1 ? '&visible_projects=' +visible_projects : '?visible_projects=' +visible_projects);
+//           }
+//       });
 
-      $('input#visible_projects').val(visible_projects);
+//       $('input#visible_projects').val(visible_projects);
 
-  });
-});
+//   });
+// });
 
 $.extend($.expr[":"], {
     "MyCaseInsensitiveContains": function(elem, i, match, array) {

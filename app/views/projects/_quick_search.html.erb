@@ -1,0 +1,44 @@
+<% if  controller.controller_name == 'projects' && controller.action_name == 'index' %>
+  <input type=text name=filter-by-tracker id="filter-by-tracker" class=filter placeholder='<%= l('quick_search') %>' >
+  <script>
+  $(document).ready(function() {
+    var timer;
+
+    $('#filter-by-tracker').on('input', function() {
+      clearTimeout(timer);
+      timer = setTimeout(function() {
+        console.log('#filter-by-tracker')
+      }, 500); // Définissez le délai en millisecondes (par exemple, 500ms)
+
+      let search_term = $(this).val();
+
+      let queryData = {
+        search_term: search_term,
+        query: <%= @query.to_json.html_safe %>,
+        page : <%= @entry_pages.page %>,
+        entry_pages : <%= @entry_pages.to_json.html_safe %>
+      };
+
+      $.ajax({
+        url: '<%= plugin_projects_queries_extension_search_path %>',
+        method: 'GET',
+        dataType: 'json',
+        data: queryData,
+        success: function(response) {
+          displaySearchResults(response);
+        }
+      });
+
+    });
+
+    function displaySearchResults(projects) {
+      let resultsDiv = $('#projects_list');
+      console.log(resultsDiv);
+      if (projects.html) {
+        resultsDiv.empty();
+        resultsDiv.append(projects.html);
+      }
+    }
+  });
+  </script>
+<% end %>

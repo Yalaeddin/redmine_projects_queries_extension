@@ -17,3 +17,13 @@ Deface::Override.new :virtual_path  => 'projects/index',
                      :name          => 'add-email-export-link-on-the-projects-page',
                      :insert_before => 'erb[silent]:contains("html_title(l(:label_project_plural))")',
                      :partial       => 'projects/link_to_export'
+
+
+Deface::Override.new :virtual_path  => 'projects/index',                    
+                     :name          => 'surround_partial_list_by_div_parent',
+                     :surround      => "erb[loud]:contains('render :partial => @query.display_type, :locals => { :entries => @entries }')",
+                     :text          => '<div id="projects_list"><%= render_original %></div>'
+
+
+
+
